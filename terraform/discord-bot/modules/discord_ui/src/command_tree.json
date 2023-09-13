@@ -1,0 +1,19 @@
+{
+    "name": "img2img",
+    "type": 1,
+    "description": "Image to image",
+    "options": [
+        {
+            "name": "image",
+            "description": "Upload a image",
+            "type": 11,
+            "required": "True"
+        },
+        {
+            "name": "prompt",
+            "description": "prompt (optional)",
+            "type": 3,
+            "required": "False"
+        }
+    ]
+}

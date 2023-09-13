@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-sd
+  # namespace: stable-diffusion
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: controller-sd
+  template:
+    metadata:
+      labels:
+        app: controller-sd
+    spec:
+      serviceAccountName: sqsexec-sa
+      nodeSelector:
+        "eks/node-type": "cpu"
+        "karpenter.sh/provisioner-name": "public-karpenter"
+      tolerations:
+      - key: sd/service
+        operator: Exists
+        effect: NoSchedule
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: controller-sd
+          image: 733851053666.dkr.ecr.ap-northeast-1.amazonaws.com/controller-sd:0.1
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 1
+          env:
+          - name: SQSQUEUEURL 
+            value: "https://sqs.ap-northeast-1.amazonaws.com/733851053666/discord-sd-gai-prod.fifo"
+          - name: REGION
+            value: "ap-northeast-1"
+          - name: ENDPOINT
+            value: "http://stable-diffusion"
